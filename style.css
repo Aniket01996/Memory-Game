@@ -1,0 +1,108 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5rem;
+    background-image: url("./images/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Poppins', sans-serif;
+}
+
+#card-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 2rem;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: bolder;
+}
+
+span {
+    font-family: 'Nosifer', sans-serif;
+    background-image: linear-gradient(to right top, black, red);
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* .card {
+    width: 12rem;
+    height: 18rem;
+    background-color: red;
+    background-size: contain;
+    border-radius: .6rem;
+    padding: 20px;
+    box-shadow: 5px 5px 5px black;
+
+}
+
+.card_selected {
+    border: 2px solid blue;
+}
+
+.cardMatch {
+    border: 5px solid purple;
+} */
+
+.card {
+    position: relative;
+    transition: all .4s linear;
+    transform-style: preserve-3d;
+    padding: 20px;
+}
+
+.card,
+.back-card,
+.front-card {
+    width: 13rem;
+    height: 18rem;
+}
+
+.back-card,
+.front-card {
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.front-card {
+    color: light;
+    background-image: linear-gradient(to right top, #D5AF63, #AB7146);
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: .6rem;
+    box-shadow: 5px 5px 5px black;
+}
+
+.back-card {
+    transform: rotateY(180deg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-shadow: 5px 5px 5px black;
+    background-position: center center;
+}
+
+.card_selected {
+    transform: rotateY(180deg);
+}
+
+.cardMatch .front-card {
+    background-image: linear-gradient(to right top, black, red);
+}
+
+button {
+    width: 200px;
+    height: 100px;
+    border-radius: 12px;
+    background-image: linear-gradient(to right top, black, red);
+    color: white;
+    margin: auto;
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 5px 5px 5px black;
+    cursor: pointer;
+}

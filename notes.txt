@@ -1,0 +1,199 @@
+Steps to follow -
+1. Create a grid of cards with images on the back.
+2. Duplicate the grid and increase the number of the cards.
+3. Randomize the order of the cards.
+4. Add CSS class to show which cards have been selected.
+5. Allow only two cards to be selected per turn.
+6. Add CSS style to match the selected cards.
+7. Add a delay to show selected cards for a short period of time.
+8. Create two sides for each card and style them to create a flipping effect.
+
+cardsArray => gameCard => shuffledChild
+
+step-1
+As we created cards dynamically (using js create element - append child method) we couldn't class name each card individually different so we used -  childDiv.dataset.name = cardsArray[i].name;
+
+step-2
+To establish step 2 we used - const gameCard = cardsArray.concat(cardsArray);
+
+step-3
+go through tech thapa video - fisher-yates shuffle algorithym
+Note : This method creates a new shuffled array instead of modifying the original one.
+
+const myNumbers = (array) => {
+    for(let i = array.length -1; i>0; i--) {
+        let j = Math.floor(Math.random()* (i+1))
+        clg (i,j)
+        let temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
+    }
+    return array
+}
+const shuffledChild = myNumbers(gameCard)
+or 
+we can also use another method - let shuffledChild = Array.from(gameCard).sort(()=> 0.5-Math.random())
+
+step-4 
+locating the selected (clicked) card
+
+parentDiv.addEventListener("click", (e) => {
+  let curCard = e.target;
+  //To avoid main container selection 
+  if (curCard.id === "card-container") {
+    return false;
+  }
+  console.log("container spotted");
+  curCard.classList.add("card_selected");
+});
+
+step-5
+As we can select multiple cards on click, we need to limit the selection by 2
+let clickCount = 0;        //Assign a vairable.
+ clickCount++;             // Inside the onclick event
+ if (clickCount < 3) {     //Adding this condition inside the already existing parentDiv addEventListener
+    curCard.classList.add("card_selected");
+  }
+
+step-6
+Here, basically what we're doing is we want 2 cards to match and apply a certain css to show that its matched
+
+let firstCard = "";
+let secondCard = "";
+
+//Styling the matched cards
+const matchedCard = () => {
+  let card_selected = document.querySelectorAll(".card_selected");
+
+  card_selected.forEach((curElement) => {
+    curElement.classList.add("cardMatch");
+  });
+};
+
+ if (clickCount < 3) {
+    if (clickCount === 1) {
+      firstCard = curCard.dataset.name;
+      curCard.classList.add("card_selected");
+    } else {
+      secondCard = curCard.dataset.name;
+      curCard.classList.add("card_selected");
+    }
+
+  if (firstCard !== "" && secondCard !== "") {
+    if (firstCard === secondCard) {
+      matchedCard();
+    }
+  }
+ }
+Now we can see on clicking that the cards if matched show a matching css (border:purple) and if not then the normal selection css (border:blue) but as we conditioned before that the selection value should only be 2 clicks and now we want to have the further access of clicking to play ahead...
+
+step-7
+Continue playing until all matches have been made.
+
+let clickCount = 0;
+
+const resetGame = () => {
+  firstCard = "";
+  secondCard = "";
+  clickCount = 0;
+
+  let card_selected = document.querySelectorAll(".card_selected");
+
+  card_selected.forEach((curElement) => {
+    curElement.classList.remove("card_selected");
+  });
+};
+
+ Calling the resetGame function in previous if else condition and also adding else condition and calling the same function in it because we still want to continue clicking even if the cards are matched or not we want to play further
+
+  if (firstCard !== "" && secondCard !== "") {
+      if (firstCard === secondCard) {
+        matchedCard();
+        resetGame();
+      } else {
+        resetGame();
+      }
+    }
+    
+Now as we know we wanto have a delay when the cards are matched so...we'll modify our above code and
+we'll add a set timeout function to our resetGame() and matchedCard()
+  if (firstCard !== "" && secondCard !== "") {
+      if (firstCard === secondCard) {
+        setTimeout(() => {
+          matchedCard();
+          resetGame();
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          resetGame();
+        }, 1000);
+      }
+    }
+
+step-8
+As we want front and back cards inside our childDiv (two side to each card)
+
+we'll make two divs and assign classes to it and then append them inside our childDiv
+  const frontDiv = document.createElement("div");
+  frontDiv.classList.add("front-card");
+  const backDiv = document.createElement("div");
+  backDiv.classList.add("back-card");
+
+  childDiv.appendChild(frontDiv);
+  childDiv.appendChild(backDiv);
+
+Now as we know that we want the img to be on the back of each card
+we'll comment the default img part that was previously assigned to our childDiv and assign the same to the backDiv that we've created.
+
+const frontDiv = document.createElement("div");
+  frontDiv.classList.add("front-card");
+const backDiv = document.createElement("div");
+  backDiv.classList.add("back-card");
+  backDiv.style.backgroundImage = `url(${shuffledChild[i].img})`;
+  backDiv.style.backgroundSize = "cover";
+  backDiv.style.backgroundRepeat = "no-repeat";
+
+Now, we'll make changes to our css - .card, .card-selected and .cardMatch
+
+Now, as we want the front and back div to affect and take our css properties but by far yet its getting applied to our parent div as can be seen in console
+so, we'll make a few changes in click counter conditions
+ if (clickCount < 3) {
+    if (clickCount === 1) {
+      firstCard = curCard.parentNode.dataset.name;
+      curCard.parentNode.classList.add("card_selected");
+    } else {
+      secondCard = curCard.parentNode.dataset.name;
+      curCard.parentNode.classList.add("card_selected");
+    }
+}
+----------------------------------------------------------------------------------------------------------------------
+
+Fisher-Yates shuffle algorithym (Knuth shuffle).
+step1 - Start from the last element of the array and loop through the first element.
+step2 - For each element at index i, generate a random index j between 0 and i (inclusive)
+step3 - Swap the element at index i with the element at index j.
+
+const myNumbers = (array) => {
+  for(let i = array.length - 1; i > 0; i - - ) {       
+// i = (n-1) i.e 5 and decrement (i--) indicates 
+// i = (n-2) i.e 4 then 3,2,1,0.
+// length-1 because if length is 6 i.e [1,2,3,4,5,6] The index is 5 as index starts from 0. 
+
+    let j = Math.floor(Math.Random() * (i + 1))
+
+// Math.Random gives random values in decimals between 0-1 (1 exclusive) i.e 0.1 t0 0.99.
+// Math.floor helps to avoid the output in decimals so Math.Random()* i would give a single random digit and + 1  because we dont want to exclude the last index digit.
+
+Also, we placed (i+1) in brackets as we dont want multiplication to perform first (bodmass theory) or else we'll get the shuffled output but the first digit of the output will always remain 1.
+
+ Now, step3 - swap
+    let temp = array [i]
+    array[i] = array [j]
+    array[j] = temp
+  }
+  return array
+}
+const shuffleNumbers = myNumbers([1,2,3,4,5,6]);
+console.log(shuffleNumbers)
+
+
